@@ -1,0 +1,8 @@
+{
+	"phrases.prefix": "{silver}[ {lightred}InfoTimeLimit {silver}]",
+  	"phrases.text-muted": "{lightred}You have been muted for the rest of the round.",
+	"phrases.text-unmuted": "{lime}You have been unmuted.",
+	"phrases.text-gagged": "{lightred}You have been gagged for the rest of the round.",
+	"phrases.text-ungagged": "{lime}You have been ungagged.",
+	"phrases.text-unall": "{lime}You have been unmuted and ungagged."
+}
