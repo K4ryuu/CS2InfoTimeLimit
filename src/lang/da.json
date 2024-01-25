@@ -1,0 +1,8 @@
+{
+	"phrases.prefix": "{silver}[ {lightred}InfoTimeLimit {silver}]",
+  "phrases.text-muted": "{lightred}Du er blevet stum i resten af runden.",
+	"phrases.text-unmuted": "{lime}Du er ikke længere stum.",
+	"phrases.text-gagged": "{lightred}Du er blevet gjort tavs.",
+	"phrases.text-ungagged": "{lime}Du er ikke længere tavs.",
+	"phrases.text-unall": "{lime}Du er ikke længere stum og tavs."
+}
