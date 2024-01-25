@@ -1,0 +1,8 @@
+{
+"phrases.prefix": "{silver}[ {lightred}InfoTimeLimit {silver}]",
+"phrases.text-muted": "{lightred}Zostałeś wyciszony do końca rundy.",
+"phrases.text-unmuted": "{lime}Zostałeś wyciszony.",
+"phrases.text-gagged": "{lightred} Zostałeś zakneblowany do końca rundy.",
+"phrases.text-ungagged": "{lime}Zostałeś odkneblowany.",
+"phrases.text-unall": "{lime} Zostałeś wyciszony i odkneblowany."
+}
