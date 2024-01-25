@@ -113,7 +113,8 @@ namespace K4ryuuInfoTimeLimit
 					player.VoiceFlags = VoiceFlags.Muted;
 					mutedPlayers.Add(playerSlot);
 
-					player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-muted"]}");
+					if (Config.ChatNotifications)
+						player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-muted"]}");
 				}, TimerFlags.STOP_ON_MAPCHANGE);
 			}
 
@@ -128,7 +129,8 @@ namespace K4ryuuInfoTimeLimit
 
 					gaggedPlayers.Add(playerSlot);
 
-					player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-gagged"]}");
+					if (Config.ChatNotifications)
+						player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-gagged"]}");
 				}, TimerFlags.STOP_ON_MAPCHANGE);
 			}
 
@@ -143,17 +145,20 @@ namespace K4ryuuInfoTimeLimit
 			if (player is null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot || player.IsHLTV)
 				return HookResult.Continue;
 
-			if (mutedPlayers.Contains(player.Slot) && gaggedPlayers.Contains(player.Slot))
+			if (Config.ChatNotifications)
 			{
-				player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-unall"]}");
-			}
-			else if (mutedPlayers.Contains(player.Slot) && !gaggedPlayers.Contains(player.Slot))
-			{
-				player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-unmuted"]}");
-			}
-			else if (!mutedPlayers.Contains(player.Slot) && gaggedPlayers.Contains(player.Slot))
-			{
-				player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-ungagged"]}");
+				if (mutedPlayers.Contains(player.Slot) && gaggedPlayers.Contains(player.Slot))
+				{
+					player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-unall"]}");
+				}
+				else if (mutedPlayers.Contains(player.Slot) && !gaggedPlayers.Contains(player.Slot))
+				{
+					player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-unmuted"]}");
+				}
+				else if (!mutedPlayers.Contains(player.Slot) && gaggedPlayers.Contains(player.Slot))
+				{
+					player.PrintToChat($" {Localizer["phrases.prefix"]} {Localizer["phrases.text-ungagged"]}");
+				}
 			}
 
 			if (mutedPlayers.Contains(player.Slot))
