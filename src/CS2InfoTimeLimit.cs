@@ -8,6 +8,7 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
+using Microsoft.Extensions.Logging;
 
 namespace K4ryuuInfoTimeLimit
 {
@@ -32,19 +33,30 @@ namespace K4ryuuInfoTimeLimit
 			"#myplugin/wont-mute-group",
 			"wont-mute-override"
 		};
+
+		[JsonPropertyName("chat-notifications")]
+		public bool ChatNotifications { get; set; } = true;
+
+		[JsonPropertyName("ConfigVersion")]
+		public override int Version { get; set; } = 2;
 	}
 
 	[MinimumApiVersion(153)]
 	public sealed partial class InfoTimeLimitPlugin : BasePlugin, IPluginConfig<PluginConfig>
 	{
 		public override string ModuleName => "CS2 InfoTimeLimit";
-		public override string ModuleVersion => "1.0.0";
+		public override string ModuleVersion => "1.0.1";
 		public override string ModuleAuthor => "K4ryuu";
 
 		public required PluginConfig Config { get; set; } = new PluginConfig();
 
 		public void OnConfigParsed(PluginConfig config)
 		{
+			if (config.Version < Config.Version)
+			{
+				base.Logger.LogWarning("Configuration version mismatch (Expected: {0} | Current: {1})", this.Config.Version, config.Version);
+			}
+
 			this.Config = config;
 		}
 
