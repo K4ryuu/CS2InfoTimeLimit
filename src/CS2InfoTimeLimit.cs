@@ -9,6 +9,7 @@ using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using Microsoft.Extensions.Logging;
+using CounterStrikeSharp.API.Modules.Commands.Targeting;
 
 namespace K4ryuuInfoTimeLimit
 {
@@ -45,7 +46,7 @@ namespace K4ryuuInfoTimeLimit
 	public sealed partial class InfoTimeLimitPlugin : BasePlugin, IPluginConfig<PluginConfig>
 	{
 		public override string ModuleName => "CS2 InfoTimeLimit";
-		public override string ModuleVersion => "1.0.1";
+		public override string ModuleVersion => "1.0.3";
 		public override string ModuleAuthor => "K4ryuu";
 
 		public required PluginConfig Config { get; set; } = new PluginConfig();
@@ -62,8 +63,17 @@ namespace K4ryuuInfoTimeLimit
 
 		public override void Load(bool hotReload)
 		{
-			AddCommandListener("say", OnCommandSay);
-			AddCommandListener("say_team", OnCommandSay);
+			if (Config.BlockChat)
+			{
+				AddCommandListener("say", OnCommandSay);
+				AddCommandListener("say_team", OnCommandSay);
+
+				string? path = Directory.GetParent(ModuleDirectory)?.FullName;
+				if (Directory.Exists(path + "/CS2_SimpleAdmin"))
+				{
+					AddCommandListener("css_mute", OnCommandMute);
+				}
+			}
 
 			RegisterListener<Listeners.OnMapEnd>(() =>
 			{
@@ -85,6 +95,9 @@ namespace K4ryuuInfoTimeLimit
 						gaggedPlayers.Remove(target.Slot);
 					}
 				}
+
+				mutedPlayers.Clear();
+				gaggedPlayers.Clear();
 			});
 		}
 
@@ -96,7 +109,13 @@ namespace K4ryuuInfoTimeLimit
 		{
 			CCSPlayerController player = @event.Userid;
 
-			if (player is null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot || player.IsHLTV || PlayerHaveImmunity(player))
+			if (player is null || !player.IsValid || !player.PlayerPawn.IsValid || player.IsBot || player.IsHLTV)
+				return HookResult.Continue;
+
+			if (player.Connected == PlayerConnectedState.PlayerDisconnecting)
+				return HookResult.Continue;
+
+			if (PlayerHaveImmunity(player))
 				return HookResult.Continue;
 
 			int playerSlot = player.Slot;
@@ -167,11 +186,6 @@ namespace K4ryuuInfoTimeLimit
 				mutedPlayers.Remove(player.Slot);
 			}
 
-			if (gaggedPlayers.Contains(player.Slot))
-			{
-				gaggedPlayers.Remove(player.Slot);
-			}
-
 			return HookResult.Continue;
 		}
 
@@ -186,7 +200,28 @@ namespace K4ryuuInfoTimeLimit
 			return HookResult.Continue;
 		}
 
-		public bool PlayerHaveImmunity(CCSPlayerController player)
+		private HookResult OnCommandMute(CCSPlayerController? caller, CommandInfo info)
+		{
+			TargetResult targetResult = info.GetArgTargetResult(1);
+			if (targetResult == null)
+			{
+				return HookResult.Continue;
+			}
+
+			List<CCSPlayerController> playersToTarget = targetResult.Players.Where(player => player != null && player.IsValid && AdminManager.CanPlayerTarget(caller, player)).ToList();
+
+			foreach (CCSPlayerController player in playersToTarget)
+			{
+				if (mutedPlayers.Contains(player.Slot))
+				{
+					mutedPlayers.Remove(player.Slot);
+				}
+			}
+
+			return HookResult.Continue;
+		}
+
+		private bool PlayerHaveImmunity(CCSPlayerController player)
 		{
 			bool hasImmunity = false;
 
@@ -196,15 +231,24 @@ namespace K4ryuuInfoTimeLimit
 				{
 					case '@':
 						if (AdminManager.PlayerHasPermissions(player, checkPermission))
+						{
 							hasImmunity = true;
+							break;
+						}
 						break;
 					case '#':
 						if (AdminManager.PlayerInGroup(player, checkPermission))
+						{
 							hasImmunity = true;
+							break;
+						}
 						break;
 					default:
 						if (AdminManager.PlayerHasCommandOverride(player, checkPermission))
+						{
 							hasImmunity = true;
+							break;
+						}
 						break;
 				}
 			}
