@@ -1,3 +1,7 @@
+-- 2024.01.25 - v1.0.4
+
+- fix: Gags are not removed properly
+
 -- 2024.01.25 - v1.0.3
 
 - fix: Listen mute command from CS2_SimpleAdmin to not to remove mutes, if they got muted after the plugin muted them.

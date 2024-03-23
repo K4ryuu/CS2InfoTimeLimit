@@ -3,6 +3,7 @@
     <DebugSymbols>False</DebugSymbols>
     <DebugType>None</DebugType>
     <GenerateDependencyFile>false</GenerateDependencyFile>
+    <PublishDir>./bin/CS2InfoTimeLimit/</PublishDir>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -15,7 +16,6 @@
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />

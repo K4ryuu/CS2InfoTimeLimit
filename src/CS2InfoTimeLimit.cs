@@ -5,8 +5,6 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using System.Text.Json.Serialization;
 using CounterStrikeSharp.API.Modules.Admin;
-using CounterStrikeSharp.API.Modules.Utils;
-using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Commands.Targeting;
@@ -46,7 +44,7 @@ namespace K4ryuuInfoTimeLimit
 	public sealed partial class InfoTimeLimitPlugin : BasePlugin, IPluginConfig<PluginConfig>
 	{
 		public override string ModuleName => "CS2 InfoTimeLimit";
-		public override string ModuleVersion => "1.0.3";
+		public override string ModuleVersion => "1.0.4";
 		public override string ModuleAuthor => "K4ryuu";
 
 		public required PluginConfig Config { get; set; } = new PluginConfig();
@@ -184,6 +182,11 @@ namespace K4ryuuInfoTimeLimit
 			{
 				player.VoiceFlags = VoiceFlags.Normal;
 				mutedPlayers.Remove(player.Slot);
+			}
+
+			if (gaggedPlayers.Contains(player.Slot))
+			{
+				gaggedPlayers.Remove(player.Slot);
 			}
 
 			return HookResult.Continue;
